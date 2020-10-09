@@ -34,7 +34,7 @@ def plot_dsp(length, baseline, optimized):
     ax.set_xlabel("Loop bound (N)")
     ax.set_ylabel("DSPs used")
     ax.grid(ls="--")
-    ax.legend(["behavioral, scalar", "structural, vectorized"])
+    ax.legend(["behavioral, scalar", "structural, vectorized"], loc="upper left")
     plt.tight_layout()
     plt.savefig("overview_dsp.pdf")
 
@@ -42,8 +42,8 @@ def plot_dsp(length, baseline, optimized):
 def plot_lut(length, baseline, optimized):
     plt.figure()
     ax = plt.gca()
-    ax.scatter(np.arange(len(length)), baseline, marker="o", s=75)
-    ax.scatter(np.arange(len(length)), optimized, marker="^", s=75)
+    ax.scatter(np.arange(len(length)), baseline, marker="o", s=100)
+    ax.scatter(np.arange(len(length)), optimized, marker="^", s=100)
     ax.set_xticks(np.arange(len(length)))
     ax.set_xticklabels(length)
     ax.set_xlabel("Loop bound (N)")
