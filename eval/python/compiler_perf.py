@@ -51,4 +51,4 @@ def bench_vadd(name, out_dir, lengths):
 
 
 if __name__ == "__main__":
-    bench_vadd("vadd", "out", [128])
+    bench_vadd("vadd", "out", [128, 256, 512, 1024])
