@@ -9,6 +9,10 @@ def get_reticle_dir():
     return os.path.abspath(os.path.join(get_curr_dir(), "..", "..", "reticle"))
 
 
+def get_tcl_dir():
+    return os.path.abspath(os.path.join(get_curr_dir(), "..", "tcl"))
+
+
 def change_dir(path):
     os.chdir(path)
 
