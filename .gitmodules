@@ -1,0 +1,3 @@
+[submodule "reticle"]
+	path = reticle
+	url = https://github.com/vegaluisjose/reticle.git
