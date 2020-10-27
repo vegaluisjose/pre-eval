@@ -1,8 +1,6 @@
-from reticle import build_reticle, compile_reticle, compile_baseline
-from util import make_dir, create_path
+from util import make_dir, create_path, build_reticle, compile_reticle, compile_baseline, vivado
 from vadd import vadd
 from time import perf_counter
-from vivado import synth
 import pandas as pd
 
 
@@ -38,7 +36,7 @@ def bench_vadd(name, out_dir, lengths):
             else:
                 compile_baseline(reticle_file, verilog_file, use_dsp)
                 start = perf_counter()
-                synth([out_dir, verilog_name, bench_name])
+                vivado("synth.tcl", [out_dir, verilog_name, bench_name])
                 elapsed = perf_counter() - start
             data = update(data, b, l, elapsed)
     df = pd.DataFrame.from_dict(data)
