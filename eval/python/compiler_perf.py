@@ -18,7 +18,7 @@ def update(data, backend, length, time):
     return data
 
 
-def bench(name, out_dir, lengths):
+def bench_vadd(name, out_dir, lengths):
     build_reticle()
     make_dir(out_dir)
     backends = ["base", "baseopt", "reticle"]
@@ -41,12 +41,9 @@ def bench(name, out_dir, lengths):
                 synth([out_dir, verilog_name, bench_name])
                 elapsed = perf_counter() - start
             data = update(data, b, l, elapsed)
-    return data
+    df = pd.DataFrame.from_dict(data)
+    df.to_csv("compiler_perf_vadd.csv", index=False)
 
 
 if __name__ == "__main__":
-    name = "vadd"
-    lengths = [128]
-    data = bench(name, "out", lengths)
-    df = pd.DataFrame.from_dict(data)
-    df.to_csv("compiler_perf.csv", index=False)
+    bench_vadd("vadd", "out", [128])
