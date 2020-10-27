@@ -1,4 +1,11 @@
-from util import make_dir, create_path, build_reticle, compile_reticle, compile_baseline, vivado
+from util import (
+    make_dir,
+    create_path,
+    build_reticle,
+    compile_reticle,
+    compile_baseline,
+    vivado,
+)
 from vadd import vadd
 from time import perf_counter
 import pandas as pd
