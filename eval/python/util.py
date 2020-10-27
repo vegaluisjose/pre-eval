@@ -11,3 +11,13 @@ def get_reticle_dir():
 
 def change_dir(path):
     os.chdir(path)
+
+
+def make_dir(path):
+    p = os.path.join(path)
+    if not os.path.isdir(p):
+        os.makedirs(p)
+
+
+def create_path(dir, file):
+    return os.path.abspath(os.path.join(dir, file))

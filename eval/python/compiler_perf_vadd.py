@@ -1,0 +1,47 @@
+from reticle import build_reticle, compile_reticle, compile_baseline
+from util import make_dir, create_path
+from vadd import vadd
+from time import perf_counter
+import pandas as pd
+
+
+def update(data, backend, length, time):
+    if data:
+        data["backend"].append(backend)
+        data["length"].append(length)
+        data["time"].append(time)
+    else:
+        data["backend"] = [backend]
+        data["length"] = [length]
+        data["time"] = [time]
+    return data
+
+
+def bench(name, out_dir, lengths):
+    build_reticle()
+    make_dir(out_dir)
+    backends = ["base", "baseopt", "reticle"]
+    data = {}
+    for l in lengths:
+        bench_name = "{}{}".format(name, l)
+        reticle_file = create_path(out_dir, "{}.ret".format(bench_name))
+        vadd(bench_name, l, reticle_file)
+        for b in backends:
+            use_dsp = True if b == "baseopt" else False
+            verilog_file = create_path(out_dir, "{}_{}.v".format(bench_name, b))
+            if b == "reticle":
+                start = perf_counter()
+                compile_reticle(reticle_file, verilog_file)
+                elapsed = perf_counter() - start
+            else:
+                compile_baseline(reticle_file, verilog_file, use_dsp)
+                start = perf_counter()
+                elapsed = perf_counter() - start
+            data = update(data, b, l, elapsed)
+    return data
+
+
+if __name__ == "__main__":
+    name = "vadd"
+    lengths = [128, 256, 512, 1024]
+    bench(name, "out", lengths)

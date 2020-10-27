@@ -24,7 +24,7 @@ def translate_bin():
     )
 
 
-def compile_baselinec(inp, out, use_dsp=False):
+def compile_baseline(inp, out, use_dsp=False):
     cmd = []
     cmd.append(translate_bin())
     cmd.append("-b")
@@ -48,7 +48,3 @@ def compile_reticle(inp, out):
     cmd.append(inp)
     cp = sp.run(cmd, check=True, stdout=sp.PIPE)
     return cp.stdout.decode("utf-8")
-
-
-if __name__ == "__main__":
-    build_reticle()
