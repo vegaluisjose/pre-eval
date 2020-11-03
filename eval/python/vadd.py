@@ -1,4 +1,5 @@
 import argparse
+import sys
 
 
 def fmt(ident, value):
@@ -74,11 +75,13 @@ def parse_args():
     parser.add_argument("-o", help="output file", type=str)
     args = parser.parse_args()
     if not isinstance(args.n, str):
-        print("Error: parsing name")
-        raise argparse.ArgumentTypeError
+        print("Error: missing function name")
+        parser.print_help(sys.stderr)
+        sys.exit(1)
     if not isinstance(args.l, int):
-        print("Error: parsing length")
-        raise argparse.ArgumentTypeError
+        print("Error: missing length parameter")
+        parser.print_help(sys.stderr)
+        sys.exit(1)
     return args.n, args.l, args.o
 
 
