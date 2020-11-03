@@ -1,39 +1,3 @@
-# def dot(en: bool, bias: i8, a: i8, b: i8, c: i8, d: i8, e: i8, f:i8) -> (y: i8) {
-#     t0: i8 = reg[0](a, en);
-#     t1: i8 = reg[0](b, en);
-#     t2: i8 = reg[0](c, en);
-#     t3: i8 = reg[0](d, en);
-#     u0: i8 = reg[0](e, en);
-#     u1: i8 = reg[0](f, en);
-#     t4: i8 = mul(t0, t1);
-#     t5: i8 = mul(t2, t3);
-#     u2: i8 = mul(u0, u1);
-#     t6: i8 = reg[0](t4, en);
-#     t7: i8 = reg[0](t5, en);
-#     u3: i8 = reg[0](u2, en);
-#     t8: i8 = add(t6, bias);
-#     t9: i8 = reg[0](t8, en);
-#     t10: i8 = add(t7, t9);
-#     u4: i8 = reg[0](t10, en);
-#     u5: i8 = add(u3, u4);
-#     y: i8 = reg[0](u5, en);
-# }
-
-#     t0: i8 = reg[0](a, en);
-#     t1: i8 = reg[0](b, en);
-#     t2: i8 = mul(t0, t1);
-#     t3: i8 = reg[0](t2, en);
-
-#     t4: i8 = add(t3, m);
-#     t5: i8 = reg[0](t4, en);
-
-
-#     t10: i8 = add(t7, t9);
-#     u4: i8 = reg[0](t10, en);
-#     u5: i8 = add(u3, u4);
-#     y: i8 = reg[0](u5, en);
-
-
 def name(ident, num):
     return "{}{}".format(ident, num)
 
@@ -56,13 +20,6 @@ def add(dst, lhs, rhs):
 
 def mul(dst, lhs, rhs):
     return binop(dst, "mul", lhs, rhs)
-
-
-def prog(body):
-    # s = signature(name, inps, outs)
-    b = "\n".join(body)
-    # prog = "{} {{\n{}\n}}".format(s, b)
-    return b
 
 
 def dot(a, b, c, en, y, t, length):
@@ -94,21 +51,55 @@ def dot(a, b, c, en, y, t, length):
     return t, body
 
 
-def emit():
+def data_ports(ports, length, ty):
+    res = []
+    for i in range(length):
+        for p in ports:
+            res.append(expr(name(p, i), ty))
+    return res
+
+
+def val_ports(ports, ty):
+    res = []
+    for p in ports:
+        res.append(expr(p, ty))
+    return res
+
+
+def sig(name, en, lhs, rhs, val, res, length, ty):
+    inp = []
+    inp += data_ports(lhs, length, ty)
+    inp += data_ports(rhs, length, ty)
+    inp += val_ports(val, ty)
+    inp.append(expr(en, "bool"))
+    out = data_ports(res, length, ty)
+    i = ", ".join(inp)
+    o = ", ".join(out)
+    sig = "def {}({})->({})".format(name, i, o)
+    return sig
+
+
+def prog(sig, body):
+    body = "\n".join(body)
+    prog = "{} {{\n{}\n}}".format(sig, body)
+    return prog
+
+
+def emit(name, length):
     ty = "i8"
     t = 0
     body = []
-    length = 2
     lhs = ["a", "c", "e", "g"]
     rhs = ["b", "d", "f", "h"]
     val = ["m", "n", "o", "p"]
     res = ["w", "x", "y", "z"]
     en = "en"
+    s = sig(name, en, lhs, rhs, val, res, length, ty)
     for i in range(4):
         t, tb = dot(lhs[i], rhs[i], val[i], en, res[i], t, length)
         body += tb
-    return prog(body)
+    return prog(s, body)
 
 
 if __name__ == "__main__":
-    print(emit())
+    print(emit("main", 2))
