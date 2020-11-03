@@ -51,7 +51,7 @@ def dot(a, b, c, en, y, t, length):
     return t, body
 
 
-def data_ports(ports, length, ty):
+def index_ports(ports, length, ty):
     res = []
     for i in range(length):
         for p in ports:
@@ -59,7 +59,7 @@ def data_ports(ports, length, ty):
     return res
 
 
-def val_ports(ports, ty):
+def ports(ports, ty):
     res = []
     for p in ports:
         res.append(expr(p, ty))
@@ -68,11 +68,11 @@ def val_ports(ports, ty):
 
 def sig(name, en, lhs, rhs, val, res, length, ty):
     inp = []
-    inp += data_ports(lhs, length, ty)
-    inp += data_ports(rhs, length, ty)
-    inp += val_ports(val, ty)
+    inp += index_ports(lhs, length, ty)
+    inp += index_ports(rhs, length, ty)
+    inp += ports(val, ty)
     inp.append(expr(en, "bool"))
-    out = data_ports(res, length, ty)
+    out = ports(res, ty)
     i = ", ".join(inp)
     o = ", ".join(out)
     sig = "def {}({})->({})".format(name, i, o)
