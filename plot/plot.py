@@ -70,8 +70,7 @@ if __name__ == "__main__":
     lut = calculate_util("lut", "vadd")
     dsp = calculate_util("dsp", "vadd")
     fig, axes = plt.subplots(1, 4, figsize=(15, 3))
-    fig.suptitle("Add")
-    # print(lut)
+    # fig.suptitle("Add")
     sns.barplot(
         ax=axes[0], x="length", y="speedup", hue="backend", data=compiler
     )
