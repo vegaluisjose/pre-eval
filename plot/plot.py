@@ -20,21 +20,25 @@ def get_time_values(data, backend):
     return df["time"].to_numpy()
 
 
-def get_length_values(data):
-    df = get_values(data, "primitive", "lut")
-    df = get_values(df, "backend", "base")
-    return df["length"].to_numpy()
-
-
-def calculate_util_ratio():
-    util = pd.read_csv("data/util/vadd.csv")
-    length = get_length_values(util)
-    for backend in ["base", "baseopt"]:
-        for prim in ["lut", "dsp"]:
-            old = get_prim_values(util, backend, prim)
-            new = get_prim_values(util, "reticle", prim)
-            # ratio = [n / o for (n,o) in zip(new, old)]
-            print("old:{} new:{}".format(old, new))
+def calculate_util(prim, prog):
+    file = "{}.csv".format(prog)
+    data = pd.read_csv(os.path.join("data", "util", file))
+    data = data.sort_values(by=["length"])
+    ret = get_values(data, "backend", "reticle")
+    ret = get_values(ret, "primitive", "lut")
+    length = []
+    backend = []
+    number = []
+    for b in ["base", "baseopt", "reticle"]:
+        for n in get_prim_values(data, b, prim):
+            backend.append(b)
+            number.append(n)
+        length += list(ret["length"].to_numpy())
+    res = {}
+    res["backend"] = backend
+    res["length"] = length
+    res["number"] = number
+    return pd.DataFrame.from_dict(res)
 
 
 def calculate_speedup(metric, prog):
@@ -63,15 +67,22 @@ if __name__ == "__main__":
     sns.set_theme(style="whitegrid")
     compiler = calculate_speedup("compiler", "vadd")
     runtime = calculate_speedup("runtime", "vadd")
-    fig, axes = plt.subplots(1, 4, figsize=(15, 5))
+    lut = calculate_util("lut", "vadd")
+    dsp = calculate_util("dsp", "vadd")
+    fig, axes = plt.subplots(1, 4, figsize=(15, 3))
     fig.suptitle("Add")
+    # print(lut)
     sns.barplot(
         ax=axes[0], x="length", y="speedup", hue="backend", data=compiler
     )
     sns.barplot(
         ax=axes[1], x="length", y="speedup", hue="backend", data=runtime
     )
-    axes[0].set(ylabel="compiler speedup")
-    axes[1].set(ylabel="runtime speedup")
+    sns.barplot(ax=axes[2], x="length", y="number", hue="backend", data=lut)
+    sns.barplot(ax=axes[3], x="length", y="number", hue="backend", data=dsp)
+    axes[0].set(xlabel="Length", ylabel="Compiler speedup")
+    axes[1].set(xlabel="Length", ylabel="Runtime speedup")
+    axes[2].set(xlabel="Length", ylabel="LUTs used")
+    axes[3].set(xlabel="Length", ylabel="DSPs used")
     plt.tight_layout()
-    plt.savefig("plot.pdf")
+    plt.savefig("vadd.pdf")
