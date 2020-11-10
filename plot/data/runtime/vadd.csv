@@ -1,0 +1,13 @@
+backend,length,time
+base,128,1.002
+baseopt,128,0.28
+reticle,128,0.339
+base,256,1.11
+baseopt,256,0.28
+reticle,256,0.339
+base,512,1.359
+baseopt,512,1.056
+reticle,512,0.339
+base,1024,1.277
+baseopt,1024,1.515
+reticle,1024,0.339
