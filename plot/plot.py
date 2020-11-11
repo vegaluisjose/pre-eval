@@ -91,7 +91,7 @@ if __name__ == "__main__":
     runtime = runtime_speedup("vadd")
     lut = calculate_util("lut", "vadd")
     dsp = calculate_util("dsp", "vadd")
-    fig, axes = plt.subplots(1, 4, figsize=(15, 4))
+    fig, axes = plt.subplots(1, 4, figsize=(15, 3))
     compiler_colors = ["#cccccc", "#999999"]
     runtime_colors = ["#999999", "#666666"]
     util_colors = ["#cccccc", "#999999", "#666666"]
