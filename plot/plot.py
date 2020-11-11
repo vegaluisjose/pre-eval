@@ -41,9 +41,9 @@ def calculate_util(prim, prog):
     return pd.DataFrame.from_dict(res)
 
 
-def calculate_speedup(metric, prog):
+def compiler_slowdown(prog):
     file = "{}.csv".format(prog)
-    data = pd.read_csv(os.path.join("data", metric, file))
+    data = pd.read_csv(os.path.join("data", "compiler", file))
     data = data.sort_values(by=["length"])
     ret = get_values(data, "backend", "reticle")
     length = []
@@ -63,25 +63,70 @@ def calculate_speedup(metric, prog):
     return pd.DataFrame.from_dict(res)
 
 
+def runtime_speedup(prog):
+    file = "{}.csv".format(prog)
+    data = pd.read_csv(os.path.join("data", "runtime", file))
+    data = data.sort_values(by=["length"])
+    ret = get_values(data, "backend", "reticle")
+    length = []
+    backend = []
+    speedup = []
+    for b in ["baseopt", "reticle"]:
+        old = get_time_values(data, "base")
+        new = get_time_values(data, b)
+        for (n, o) in zip(new, old):
+            backend.append(b)
+            speedup.append(o / n)
+        length += list(ret["length"].to_numpy())
+    res = {}
+    res["backend"] = backend
+    res["length"] = length
+    res["speedup"] = speedup
+    return pd.DataFrame.from_dict(res)
+
+
 if __name__ == "__main__":
     sns.set_theme(style="whitegrid")
-    compiler = calculate_speedup("compiler", "vadd")
-    runtime = calculate_speedup("runtime", "vadd")
+    compiler = compiler_slowdown("vadd")
+    runtime = runtime_speedup("vadd")
     lut = calculate_util("lut", "vadd")
     dsp = calculate_util("dsp", "vadd")
-    fig, axes = plt.subplots(1, 4, figsize=(15, 3))
-    # fig.suptitle("Add")
+    fig, axes = plt.subplots(1, 4, figsize=(15, 4))
+    compiler_colors = ["#cccccc", "#999999"]
+    runtime_colors = ["#999999", "#666666"]
+    util_colors = ["#cccccc", "#999999", "#666666"]
+    sns.set_palette(sns.color_palette(compiler_colors))
     sns.barplot(
         ax=axes[0], x="length", y="speedup", hue="backend", data=compiler
     )
+    sns.set_palette(sns.color_palette(runtime_colors))
     sns.barplot(
         ax=axes[1], x="length", y="speedup", hue="backend", data=runtime
     )
+    sns.set_palette(sns.color_palette(util_colors))
     sns.barplot(ax=axes[2], x="length", y="number", hue="backend", data=lut)
+    sns.set_palette(sns.color_palette(util_colors))
     sns.barplot(ax=axes[3], x="length", y="number", hue="backend", data=dsp)
-    axes[0].set(xlabel="Length", ylabel="Compiler speedup")
-    axes[1].set(xlabel="Length", ylabel="Runtime speedup")
-    axes[2].set(xlabel="Length", ylabel="LUTs used")
-    axes[3].set(xlabel="Length", ylabel="DSPs used")
+    axes[0].set_xlabel("Length")
+    axes[1].set_xlabel("Length")
+    axes[2].set_xlabel("Length")
+    axes[3].set_xlabel("Length")
+    axes[0].set_ylabel("Compiler slowdown")
+    axes[1].set_ylabel("Runtime speedup")
+    axes[2].set_ylabel("LUTs used")
+    axes[3].set_ylabel("DSPs used")
+    axes[0].get_legend().remove()
+    axes[1].get_legend().remove()
+    axes[2].get_legend().remove()
+    new_labels = ["base", "hint", "reticle"]
+    handles, _ = axes[3].get_legend_handles_labels()
+    axes[3].legend(
+        handles,
+        new_labels,
+        fontsize="12",
+        loc="center left",
+        bbox_to_anchor=(1, 0.5),
+        title="Lang",
+    )
     plt.tight_layout()
     plt.savefig("vadd.pdf")
