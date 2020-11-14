@@ -41,17 +41,15 @@ def build_reticle():
     return cp.stdout.decode("utf-8")
 
 
-def translate_bin():
+def reticle_bin(name):
     return os.path.abspath(
-        os.path.join(
-            get_reticle_dir(), "target", "release", "reticle-translate"
-        )
+        os.path.join(get_reticle_dir(), "target", "release", name)
     )
 
 
 def compile_baseline(inp, out, use_dsp=False):
     cmd = []
-    cmd.append(translate_bin())
+    cmd.append(reticle_bin("reticle-translate"))
     cmd.append("-b")
     cmd.append("verilog")
     if use_dsp:
@@ -65,9 +63,43 @@ def compile_baseline(inp, out, use_dsp=False):
 
 def compile_reticle(inp, out):
     cmd = []
-    cmd.append(translate_bin())
+    cmd.append(reticle_bin("reticle-translate"))
     cmd.append("-b")
     cmd.append("reticle")
+    cmd.append("-o")
+    cmd.append(out)
+    cmd.append(inp)
+    cp = sp.run(cmd, check=True, stdout=sp.PIPE)
+    return cp.stdout.decode("utf-8")
+
+
+def reticle_to_asm(inp, out):
+    cmd = []
+    cmd.append(reticle_bin("reticle-translate"))
+    cmd.append("-b")
+    cmd.append("asm")
+    cmd.append("-o")
+    cmd.append(out)
+    cmd.append(inp)
+    cp = sp.run(cmd, check=True, stdout=sp.PIPE)
+    return cp.stdout.decode("utf-8")
+
+
+def reticle_to_asm_placed(inp, out):
+    cmd = []
+    cmd.append(reticle_bin("reticle-opt"))
+    cmd.append("--asm")
+    cmd.append("-o")
+    cmd.append(out)
+    cmd.append(inp)
+    cp = sp.run(cmd, check=True, stdout=sp.PIPE)
+    return cp.stdout.decode("utf-8")
+
+
+def reticle_asm_to_verilog(inp, out):
+    cmd = []
+    cmd.append(reticle_bin("reticle-translate"))
+    cmd.append("--asm")
     cmd.append("-o")
     cmd.append(out)
     cmd.append(inp)
