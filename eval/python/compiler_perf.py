@@ -26,6 +26,7 @@ def bench(name, out_dir, lengths):
         reticle_file = create_path(out_dir, "{}.ret".format(bench_name))
         vadd(bench_name, l, reticle_file)
         for b in backends:
+            print("Running {} backend with length={}".format(b, l))
             use_dsp = True if b == "baseopt" else False
             file_name = "{}_{}".format(bench_name, b)
             verilog_file = create_path(out_dir, "{}.v".format(file_name))
