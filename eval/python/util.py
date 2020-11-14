@@ -51,7 +51,7 @@ def compile_baseline(inp, out, use_dsp=False):
     cmd = []
     cmd.append(reticle_bin("reticle-translate"))
     cmd.append("-b")
-    cmd.append("verilog")
+    cmd.append("behavioral")
     if use_dsp:
         cmd.append("--use-dsp")
     cmd.append("-o")
