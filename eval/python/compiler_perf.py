@@ -20,7 +20,6 @@ def bench(name, out_dir, lengths):
     build_reticle()
     make_dir(out_dir)
     backends = ["base", "baseopt", "reticle"]
-    # backends = ["reticle"]
     data = {}
     for l in lengths:
         bench_name = "{}{}".format(name, l)
