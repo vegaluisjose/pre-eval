@@ -1,11 +1,4 @@
-from util import (
-    make_dir,
-    create_path,
-    build_reticle,
-    compile_reticle,
-    compile_baseline,
-    vivado,
-)
+from util import *
 from vadd import vadd
 from time import perf_counter
 import pandas as pd
@@ -23,10 +16,38 @@ def update(data, backend, length, time):
     return data
 
 
-def bench_vadd(name, out_dir, lengths):
+# def bench_vadd(name, out_dir, lengths):
+#    build_reticle()
+#    make_dir(out_dir)
+#    backends = ["base", "baseopt", "reticle"]
+#    data = {}
+#    for l in lengths:
+#        bench_name = "{}{}".format(name, l)
+#        reticle_file = create_path(out_dir, "{}.ret".format(bench_name))
+#        vadd(bench_name, l, reticle_file)
+#        for b in backends:
+#            use_dsp = True if b == "baseopt" else False
+#            verilog_name = "{}_{}".format(bench_name, b)
+#            verilog_file = create_path(out_dir, "{}.v".format(verilog_name))
+#            if b == "reticle":
+#                start = perf_counter()
+#                compile_reticle(reticle_file, verilog_file)
+#                elapsed = perf_counter() - start
+#            else:
+#                compile_baseline(reticle_file, verilog_file, use_dsp)
+#                start = perf_counter()
+#                vivado("synth.tcl", [out_dir, verilog_name, bench_name])
+#                elapsed = perf_counter() - start
+#            data = update(data, b, l, elapsed)
+#    df = pd.DataFrame.from_dict(data)
+#    df.to_csv("compiler_perf_vadd.csv", index=False)
+
+
+def bench(name, out_dir, lengths):
     build_reticle()
     make_dir(out_dir)
-    backends = ["base", "baseopt", "reticle"]
+    # backends = ["base", "baseopt", "reticle"]
+    backends = ["reticle"]
     data = {}
     for l in lengths:
         bench_name = "{}{}".format(name, l)
@@ -34,21 +55,29 @@ def bench_vadd(name, out_dir, lengths):
         vadd(bench_name, l, reticle_file)
         for b in backends:
             use_dsp = True if b == "baseopt" else False
-            verilog_name = "{}_{}".format(bench_name, b)
-            verilog_file = create_path(out_dir, "{}.v".format(verilog_name))
+            bench_name = "{}_{}".format(bench_name, b)
+            verilog_file = create_path(out_dir, "{}.v".format(bench_name))
+            reticle_asm_file = create_path(
+                out_dir, "{}.rasm".format(bench_name)
+            )
+            reticle_asm_placed_file = create_path(
+                out_dir, "{}_placed.rasm".format(bench_name)
+            )
             if b == "reticle":
                 start = perf_counter()
-                compile_reticle(reticle_file, verilog_file)
+                reticle_to_asm(reticle_file, reticle_asm_file)
+                reticle_place_asm(reticle_asm_file, reticle_asm_placed_file)
                 elapsed = perf_counter() - start
             else:
                 compile_baseline(reticle_file, verilog_file, use_dsp)
                 start = perf_counter()
-                vivado("synth.tcl", [out_dir, verilog_name, bench_name])
+                vivado("synth.tcl", [out_dir, bench_name, bench_name])
                 elapsed = perf_counter() - start
             data = update(data, b, l, elapsed)
     df = pd.DataFrame.from_dict(data)
-    df.to_csv("compiler_perf_vadd.csv", index=False)
+    df.to_csv(create_path(out_dir, "{}.csv".format(name)), index=False)
 
 
 if __name__ == "__main__":
-    bench_vadd("vadd", "out", [128, 256, 512, 1024])
+    # bench("vadd", "out", [128, 256, 512, 1024])
+    bench("vadd", "out", [4])

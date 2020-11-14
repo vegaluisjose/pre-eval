@@ -85,10 +85,9 @@ def reticle_to_asm(inp, out):
     return cp.stdout.decode("utf-8")
 
 
-def reticle_to_asm_placed(inp, out):
+def reticle_place_asm(inp, out):
     cmd = []
     cmd.append(reticle_bin("reticle-opt"))
-    cmd.append("--asm")
     cmd.append("-o")
     cmd.append(out)
     cmd.append(inp)
