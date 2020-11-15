@@ -107,7 +107,7 @@ if __name__ == "__main__":
     axes[2].set_xlabel("Length")
     axes[3].set_xlabel("Length")
     axes[0].set_ylabel("Compiler speedup (log)")
-    axes[1].set_ylabel("Runtime speedup")
+    axes[1].set_ylabel("Run-time speedup")
     axes[2].set_ylabel("LUTs used")
     axes[3].set_ylabel("DSPs used")
     axes[0].get_legend().remove()
