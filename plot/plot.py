@@ -87,10 +87,10 @@ def runtime_speedup(prog):
 
 if __name__ == "__main__":
     sns.set_theme(style="whitegrid")
-    compiler = compiler_speedup("vadd")
-    runtime = runtime_speedup("vadd")
-    lut = calculate_util("lut", "vadd")
-    dsp = calculate_util("dsp", "vadd")
+    compiler = compiler_speedup("tadd")
+    runtime = runtime_speedup("tadd")
+    lut = calculate_util("lut", "tadd")
+    dsp = calculate_util("dsp", "tadd")
     fig, axes = plt.subplots(1, 4, figsize=(15, 3))
     sns.set_palette(sns.color_palette("muted"))
     sns.barplot(
@@ -124,4 +124,4 @@ if __name__ == "__main__":
         title="Lang",
     )
     plt.tight_layout()
-    plt.savefig("vadd.pdf")
+    plt.savefig("tadd.pdf")
