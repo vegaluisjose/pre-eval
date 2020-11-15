@@ -85,7 +85,7 @@ def parse_args():
     return args.n, args.l, args.o
 
 
-def vadd(name, length, output=None):
+def tadd(name, length, output=None):
     if output:
         with open(output, "w") as file:
             file.write(emit(name, length))

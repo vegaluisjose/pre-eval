@@ -1,5 +1,5 @@
 from util import *
-from vadd import vadd
+from tadd import tadd
 from time import perf_counter
 import pandas as pd
 
@@ -24,7 +24,7 @@ def bench(name, out_dir, lengths):
     for l in lengths:
         bench_name = "{}{}".format(name, l)
         reticle_file = create_path(out_dir, "{}.ret".format(bench_name))
-        vadd(bench_name, l, reticle_file)
+        tadd(bench_name, l, reticle_file)
         for b in backends:
             print("Running {} backend with length={}".format(b, l))
             use_dsp = True if b == "baseopt" else False
@@ -50,4 +50,4 @@ def bench(name, out_dir, lengths):
 
 
 if __name__ == "__main__":
-    bench("vadd", "out", [64, 128, 256, 512])
+    bench("tadd", "out", [64, 128, 256, 512])
