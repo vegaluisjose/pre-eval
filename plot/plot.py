@@ -85,12 +85,12 @@ def runtime_speedup(prog):
     return pd.DataFrame.from_dict(res)
 
 
-if __name__ == "__main__":
+def plot_bench(name):
     sns.set_theme(style="whitegrid")
-    compiler = compiler_speedup("tadd")
-    runtime = runtime_speedup("tadd")
-    lut = calculate_util("lut", "tadd")
-    dsp = calculate_util("dsp", "tadd")
+    compiler = compiler_speedup(name)
+    runtime = runtime_speedup(name)
+    lut = calculate_util("lut", name)
+    dsp = calculate_util("dsp", name)
     fig, axes = plt.subplots(1, 4, figsize=(15, 3))
     sns.set_palette(sns.color_palette("muted"))
     sns.barplot(
@@ -124,4 +124,7 @@ if __name__ == "__main__":
         title="Lang",
     )
     plt.tight_layout()
-    plt.savefig("tadd.pdf")
+    plt.savefig("{}.pdf".format(name))
+
+if __name__ == "__main__":
+    plot_bench("fsm")
