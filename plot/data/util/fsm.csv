@@ -9,7 +9,7 @@ base,4,4,lut
 base,4,0,dsp
 baseopt,4,4,lut
 baseopt,4,0,dsp
-reticle,4,0,lut
+reticle,4,51,lut
 reticle,4,0,dsp
 base,8,5,lut
 base,8,0,dsp
