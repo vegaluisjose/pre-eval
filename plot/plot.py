@@ -102,10 +102,10 @@ def plot_bench(name):
     sns.barplot(ax=axes[2], x="length", y="number", hue="backend", data=lut)
     sns.barplot(ax=axes[3], x="length", y="number", hue="backend", data=dsp)
     axes[0].set_yscale("log")
-    axes[0].set_xlabel("Length")
-    axes[1].set_xlabel("Length")
-    axes[2].set_xlabel("Length")
-    axes[3].set_xlabel("Length")
+    axes[0].set_xlabel("Size")
+    axes[1].set_xlabel("Size")
+    axes[2].set_xlabel("Size")
+    axes[3].set_xlabel("Size")
     axes[0].set_ylabel("Compiler speedup (log)")
     axes[1].set_ylabel("Run-time speedup")
     axes[2].set_ylabel("LUTs used")
@@ -127,4 +127,4 @@ def plot_bench(name):
     plt.savefig("{}.pdf".format(name))
 
 if __name__ == "__main__":
-    plot_bench("fsm")
+    plot_bench("tadd")
