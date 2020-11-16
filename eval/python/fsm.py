@@ -1,26 +1,5 @@
-# i = 0
-# t0: i8 = const[1];
-# t1: bool = eq(t9, t0);
-# t2: bool = and(t1, en);
-# t3: i8 = mux(t2, t0, t9);
-
-# i = 1
-# t4: i8 = const[0];
-# t5: bool = eq(t9, t4);
-# t6: bool = and(t5, en);
-# t7: i8 = mux(t6, t4, t3);
-
-# t8: bool = or(t2, t6)
-
-# t9: i8 = reg[0](t7, t8)
-
-#     t1: i8 = const[1];
-#     t4: bool = eq(t2, t1);
-#     t6: bool = and(t4, done);
-#     t8: i8 = mux(t5, t1, t7);
-#     t9: bool = or(t5, t6);
-#     state: i8 = id(t2);
-# }
+import argparse
+import sys
 
 
 def name(ident, num):
@@ -63,7 +42,7 @@ def ins_const(dst, value):
     return "{} = const[{}];".format(dst, value)
 
 
-def fsm(en, y, size):
+def gen_body(en, y, size):
     assert size >= 2
     ty = "i8"
     tmp = "t"
@@ -136,7 +115,7 @@ def emit(name, size):
     en = "en"
     y = "y"
     s = sig(name, en, y, ty)
-    body = fsm(en, y, size)
+    body = gen_body(en, y, size)
     return prog(s, body)
 
 
