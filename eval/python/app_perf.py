@@ -139,4 +139,4 @@ def bench(name, out_dir, lengths):
 
 if __name__ == "__main__":
     # bench("tadd", "out", [64, 128, 256, 512])
-    bench("fsm", "out", [2])
+    bench("fsm", "out", [2, 4, 8, 16])
