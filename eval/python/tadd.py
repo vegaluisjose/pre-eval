@@ -95,4 +95,4 @@ def tadd(name, length, output=None):
 
 if __name__ == "__main__":
     name, length, output = parse_args()
-    vadd(name, length, output)
+    tadd(name, length, output)
