@@ -69,7 +69,7 @@ def emit(name, length):
 
 
 def parse_args():
-    parser = argparse.ArgumentParser(description="generate vector programs")
+    parser = argparse.ArgumentParser(description="generate tadd")
     parser.add_argument("-n", help="function name", type=str)
     parser.add_argument("-l", help="length of vector", type=int)
     parser.add_argument("-o", help="output file", type=str)
