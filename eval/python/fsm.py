@@ -2,7 +2,7 @@ import argparse
 import sys
 
 
-def name(ident, num):
+def fmt(ident, num):
     return "{}{}".format(ident, num)
 
 
@@ -48,52 +48,46 @@ def gen_body(en, y, size):
     tmp = "t"
     body = []
     t = 0
-    reg_in_name = name(tmp, size * 6 - 1)
-    reg_en_name = name(tmp, size * 6 - 2)
+    reg_inp = fmt(tmp, size * 6 - 1)
+    reg_en = fmt(tmp, size * 6 - 2)
     cur = [i for i in range(size)]
     nxt = [i + 1 if i != size - 1 else 0 for i in range(size)]
     red = []
     for (c, n) in zip(cur, nxt):
-        body.append(ins_const(expr(name(tmp, t), ty), c))
-        body.append(ins_const(expr(name(tmp, t + 1), ty), n))
-        body.append(
-            ins_eq(expr(name(tmp, t + 2), "bool"), reg_in_name, name(tmp, t))
-        )
-        body.append(
-            ins_and(expr(name(tmp, t + 3), "bool"), en, name(tmp, t + 2))
-        )
-        red.append(name(tmp, t + 3))
+        body.append(ins_const(expr(fmt(tmp, t), ty), c))
+        body.append(ins_const(expr(fmt(tmp, t + 1), ty), n))
+        body.append(ins_eq(expr(fmt(tmp, t + 2), "bool"), reg_inp, fmt(tmp, t)))
+        body.append(ins_and(expr(fmt(tmp, t + 3), "bool"), en, fmt(tmp, t + 2)))
+        red.append(fmt(tmp, t + 3))
         if c == 0:
             body.append(
                 ins_mux(
-                    expr(name(tmp, t + 4), ty),
-                    name(tmp, t + 3),
-                    name(tmp, t + 1),
-                    reg_in_name,
+                    expr(fmt(tmp, t + 4), ty),
+                    fmt(tmp, t + 3),
+                    fmt(tmp, t + 1),
+                    reg_inp,
                 )
             )
         else:
             body.append(
                 ins_mux(
-                    expr(name(tmp, t + 4), ty),
-                    name(tmp, t + 3),
-                    name(tmp, t + 1),
-                    name(tmp, t - 1),
+                    expr(fmt(tmp, t + 4), ty),
+                    fmt(tmp, t + 3),
+                    fmt(tmp, t + 1),
+                    fmt(tmp, t - 1),
                 )
             )
         t += 5
     for i in range(size - 1):
         if i == 0:
-            body.append(ins_or(expr(name(tmp, t), "bool"), red[0], red[1]))
+            body.append(ins_or(expr(fmt(tmp, t), "bool"), red[0], red[1]))
         else:
             body.append(
-                ins_or(expr(name(tmp, t), "bool"), name(tmp, t - 1), red[i + 1])
+                ins_or(expr(fmt(tmp, t), "bool"), fmt(tmp, t - 1), red[i + 1])
             )
         t += 1
-    body.append(
-        ins_reg(expr(name(tmp, t), ty), name(tmp, t - size), reg_en_name)
-    )
-    body.append(ins_id(expr(y, ty), name(tmp, t)))
+    body.append(ins_reg(expr(fmt(tmp, t), ty), fmt(tmp, t - size), reg_en))
+    body.append(ins_id(expr(y, ty), fmt(tmp, t)))
     return body
 
 
@@ -119,5 +113,31 @@ def emit(name, size):
     return prog(s, body)
 
 
+def parse_args():
+    parser = argparse.ArgumentParser(description="generate fsm")
+    parser.add_argument("-n", help="function name", type=str)
+    parser.add_argument("-s", help="size of fsm", type=int)
+    parser.add_argument("-o", help="output file", type=str)
+    args = parser.parse_args()
+    if not isinstance(args.n, str):
+        print("Error: missing function name")
+        parser.print_help(sys.stderr)
+        sys.exit(1)
+    if not isinstance(args.s, int):
+        print("Error: missing size parameter")
+        parser.print_help(sys.stderr)
+        sys.exit(1)
+    return args.n, args.s, args.o
+
+
+def fsm(name, length, output=None):
+    if output:
+        with open(output, "w") as file:
+            file.write(emit(name, length))
+    else:
+        print(emit(name, length))
+
+
 if __name__ == "__main__":
-    print(emit("fsm", 8))
+    name, size, output = parse_args()
+    fsm(name, size, output)
