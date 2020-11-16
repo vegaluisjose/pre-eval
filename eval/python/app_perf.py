@@ -1,9 +1,11 @@
 from util import *
 from tadd import tadd
+from fsm import fsm
 from time import perf_counter
 import pandas as pd
 import re
 from os import path
+import sys
 
 
 def build_util_pattern(start, end):
@@ -99,7 +101,12 @@ def bench(name, out_dir, lengths):
     for l in lengths:
         bench_name = "{}{}".format(name, l)
         reticle_file = create_path(out_dir, "{}.ret".format(bench_name))
-        tadd(bench_name, l, reticle_file)
+        if name == "tadd":
+            tadd(bench_name, l, reticle_file)
+        elif name == "fsm":
+            fsm(bench_name, l, reticle_file)
+        else:
+            sys.exit(1)
         for b in backends:
             print("Running {} backend with length={}".format(b, l))
             file_name = "{}_{}".format(bench_name, b)
@@ -110,7 +117,8 @@ def bench(name, out_dir, lengths):
                     out_dir, "{}_placed.rasm".format(file_name)
                 )
                 reticle_to_asm(reticle_file, asm_file)
-                reticle_place_asm(asm_file, placed_file)
+                prim = "lut" if name == "fsm" else "dsp"
+                reticle_place_asm(asm_file, placed_file, prim)
                 reticle_asm_to_verilog(placed_file, verilog_file)
                 vivado("reticle.tcl", [out_dir, file_name, bench_name])
             else:
@@ -130,4 +138,5 @@ def bench(name, out_dir, lengths):
 
 
 if __name__ == "__main__":
-    bench("tadd", "out", [64, 128, 256, 512])
+    # bench("tadd", "out", [64, 128, 256, 512])
+    bench("fsm", "out", [2])

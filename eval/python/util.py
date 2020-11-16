@@ -85,11 +85,14 @@ def reticle_to_asm(inp, out):
     return cp.stdout.decode("utf-8")
 
 
-def reticle_place_asm(inp, out):
+def reticle_place_asm(inp, out, prim):
+    assert prim == "dsp" or prim == "lut"
     cmd = []
     cmd.append(reticle_bin("reticle-opt"))
     cmd.append("-o")
     cmd.append(out)
+    cmd.append("-p")
+    cmd.append(prim)
     cmd.append(inp)
     cp = sp.run(cmd, check=True, stdout=sp.PIPE)
     return cp.stdout.decode("utf-8")
