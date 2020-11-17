@@ -113,6 +113,9 @@ def plot_bench(name):
     axes[0].get_legend().remove()
     axes[1].get_legend().remove()
     axes[2].get_legend().remove()
+    if name == "tdot":
+        for i in range(4):
+            axes[i].set_xticklabels(["5x3", "5x9", "5x18", "5x36"])
     new_labels = ["base", "hint", "reticle"]
     handles, _ = axes[3].get_legend_handles_labels()
     axes[3].legend(
@@ -127,4 +130,4 @@ def plot_bench(name):
     plt.savefig("{}.pdf".format(name))
 
 if __name__ == "__main__":
-    plot_bench("tadd")
+    plot_bench("tdot")
