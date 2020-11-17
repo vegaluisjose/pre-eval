@@ -89,17 +89,17 @@ def emit(name, length):
     ty = "i8"
     t = 0
     body = []
-    lhs = ["a", "c", "e", "g"]
-    rhs = ["b", "d", "f", "h"]
-    val = ["m", "n", "o", "p"]
-    res = ["w", "x", "y", "z"]
+    lhs = ["a", "c", "e", "g", "i"]
+    rhs = ["b", "d", "f", "h", "j"]
+    val = ["m", "n", "o", "p", "q"]
+    res = ["v", "w", "x", "y", "z"]
     en = "en"
     s = sig(name, en, lhs, rhs, val, res, length, ty)
-    for i in range(4):
+    for i in range(5):
         t, tb = dot(lhs[i], rhs[i], val[i], en, res[i], t, length)
         body += tb
     return prog(s, body)
 
 
 if __name__ == "__main__":
-    print(emit("main", 2))
+    print(emit("tdot", 36))
