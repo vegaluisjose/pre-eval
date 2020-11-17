@@ -130,4 +130,6 @@ def plot_bench(name):
     plt.savefig("{}.pdf".format(name))
 
 if __name__ == "__main__":
+    plot_bench("tadd")
     plot_bench("tdot")
+    plot_bench("fsm")
