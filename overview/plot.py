@@ -34,7 +34,7 @@ def plot_dsp(length, baseline, optimized):
     ax.set_xlabel("Loop bound (N)")
     ax.set_ylabel("DSPs used")
     ax.grid(ls="--")
-    ax.legend(["behavioral, scalar", "structural, vectorized"], loc="upper left", fontsize="10")
+    ax.legend(["behavioral, scalar", "structural, vectorized (hand-optimized)"], loc="upper left", fontsize="10")
     plt.tight_layout()
     plt.savefig("overview_dsp.pdf")
 
@@ -50,7 +50,7 @@ def plot_lut(length, baseline, optimized):
     ax.set_ylabel("LUTs used")
     ax.grid(ls="--")
     ax.yaxis.set_major_formatter(formatter())
-    ax.legend(["behavioral, scalar", "structural, vectorized"], fontsize="10")
+    ax.legend(["behavioral, scalar", "structural, vectorized (hand-optimized)"], fontsize="10")
     plt.tight_layout()
     plt.savefig("overview_lut.pdf")
 
