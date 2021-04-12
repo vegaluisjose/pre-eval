@@ -4,6 +4,8 @@ import matplotlib.pyplot as plt
 import matplotlib as matplt
 import numpy as np
 
+matplt.rcParams['pdf.fonttype'] = 42
+matplt.rcParams['ps.fonttype'] = 42
 
 def filter(data, column, value):
     return data.loc[data[column] == value]
